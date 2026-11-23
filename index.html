@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="墨影江湖">
+<meta name="theme-color" content="#0b090e">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="./assets/icon-180.png">
+<link rel="icon" type="image/png" sizes="512x512" href="./assets/icon-512.png">
+<link rel="stylesheet" href="./css/lineage.css">
+<title>墨影江湖 · 蒼穹無界紀元</title>
+</head>
+<body>
+<div id="stage">
+  <canvas id="cv"></canvas>
+  <div id="labels"></div>
+
+  <div id="hud">
+    <div class="gFrame">
+      <div class="topLine" id="hudOpenSheet" title="點擊開啟人物素質、鍛造與武學">
+        <span class="charName" id="hName">青雲少俠</span>
+        <span class="lvBadge" id="hLv">Lv.1</span>
+      </div>
+      <div class="subMeta">
+        <span id="hCls">玄甲戰殿 · 俠義 0</span>
+        <span id="hAdena" style="color:var(--gold);font-weight:700">銀兩 300</span>
+      </div>
+      <div class="bar hp"><i id="bHp"></i><em id="tHp">220/220</em></div>
+      <div class="bar mp"><i id="bMp"></i><em id="tMp">80/80</em></div>
+      <div class="bar xp"><i id="bXp"></i></div>
+      <div id="buffStrip"></div>
+      <div id="petLine">
+        <span id="petInfo">靈獸：嘯月蒼狼</span>
+        <b id="petLv">Lv.1</b>
+      </div>
+      <div id="infoLine">
+        <span id="atkAcText">攻 0 · 護體 0</span>
+      </div>
+      <div id="hudBtns">
+        <button class="hbtn" id="btnSheet" type="button">經脈/武學<span class="dot" id="ptDot"></span></button>
+        <button class="hbtn" id="btnEnchantQuick" type="button">神兵鍛造</button>
+        <button class="hbtn" id="btnDungeonNav" type="button">三十重地宮</button>
+        <button class="hbtn" id="btnMute" type="button">音效:開</button>
+        <button class="hbtn" id="btnHome" type="button">回首頁</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="topRight">
+    <canvas id="minimap" width="124" height="92"></canvas>
+    <div id="zoneTag">青雲古鎮 · 安全</div>
+    <button class="ctxBtn" id="bShop" type="button">萬寶閣 / 靈獸園</button>
+    <button class="ctxBtn" id="bPortal" type="button">踏入地宮</button>
+  </div>
+
+  <div id="sysBanner"></div>
+
+  <div id="ctl">
+    <div id="joyZone"></div>
+    <div id="joy"><div id="knob"></div></div>
+
+    <!-- 底部一整排共 9 格快捷欄（熱鍵 1~9） -->
+    <div id="hotbar9">
+      <button class="hslot" id="bSlot0" type="button"><span class="kb">1</span><span class="sn" id="sn0">招一</span><i class="cd"></i></button>
+      <button class="hslot" id="bSlot1" type="button"><span class="kb">2</span><span class="sn" id="sn1">招二</span><i class="cd"></i></button>
+      <button class="hslot" id="bSlot2" type="button"><span class="kb">3</span><span class="sn" id="sn2">招三</span><i class="cd"></i></button>
+      <button class="hslot" id="bSlot3" type="button"><span class="kb">4</span><span class="sn" id="sn3">招四</span><i class="cd"></i></button>
+      <button class="hslot" id="bSlot4" type="button"><span class="kb">5</span><span class="sn" id="sn4">招五</span><i class="cd"></i></button>
+      <button class="hslot" id="bSlot5" type="button"><span class="kb">6</span><span class="sn" id="sn5">金瘡藥</span><i class="cd"></i></button>
+      <button class="hslot" id="bSlot6" type="button"><span class="kb">7</span><span class="sn" id="sn6">大還丹</span><i class="cd"></i></button>
+      <button class="hslot" id="bSlot7" type="button"><span class="kb">8</span><span class="sn" id="sn7">神行丹</span><i class="cd"></i></button>
+      <button class="hslot" id="bSlot8" type="button"><span class="kb">9</span><span class="sn" id="sn8">回城符</span><i class="cd"></i></button>
+      <button id="bCfgSlots" type="button" title="自訂 1~9 快捷鍵">⚙</button>
+    </div>
+
+    <div id="rightCluster">
+      <button class="b" id="bAtk" type="button"><span class="kb">[J/空白]</span><span class="sn">破軍</span><i class="cd"></i></button>
+    </div>
+  </div>
+
+  <div class="ov on" id="menu">
+    <h1 class="titleMain">墨影江湖 · <b>蒼穹無界</b></h1>
+    <p class="sub">五十倍無界大荒 · 三十重禁忌地宮 · Lv.399 太初魔尊 · 十種上古靈獸 · 底部九格神通快捷欄</p>
+    <div class="nameBox">
+      <label for="inpName">俠客名號</label>
+      <input id="inpName" type="text" maxlength="10" placeholder="輸入角色名稱（預設：青雲少俠）">
+    </div>
+    <div class="cards" id="clsCards">
+      <button class="card" data-cls="royal" style="--c:#e2b857" type="button"><h3>天策皇朝</h3><p>紫金帝冠 · 皇極劍氣</p><p>30 招皇道絕學至 Lv.99</p></button>
+      <button class="card sel" data-cls="knight" style="--c:#d64545" type="button"><h3>玄甲戰殿</h3><p>重鎧霸刀 · 裂地震嶽</p><p>極致體魄與刀罡爆發</p></button>
+      <button class="card" data-cls="elf" style="--c:#49a87e" type="button"><h3>追風獵盟</h3><p>穿雲神弓 · 萬箭齊發</p><p>御風身法與連珠箭雨</p></button>
+      <button class="card" data-cls="mage" style="--c:#58a6ff" type="button"><h3>太虛靈院</h3><p>星辰法杖 · 九天玄雷</p><p>回春真訣與焚天星隕</p></button>
+      <button class="card" data-cls="darkelf" style="--c:#b078f0" type="button"><h3>幽冥影閣</h3><p>無相雙刃 · 鬼影瞬殺</p><p>極速連斬與破甲絕學</p></button>
+    </div>
+    <div class="saveBar">
+      <button class="btn2" id="bStartNew" type="button">創立俠客並踏入江湖</button>
+      <button class="btn2 g" id="bCont" type="button" style="display:none">繼續修煉</button>
+      <button class="btn2 r" id="bDelChar" type="button" style="display:none">自廢武功（密碼鎖）</button>
+    </div>
+    <p class="sub" style="max-width:680px;line-height:1.65">
+      青雲古鎮擴張五十倍，鎮外八荒遍布異獸，鎮北傳送陣直通<b>三十重禁忌地宮（1F 至 30F，最終首領 Lv.399 太初魔尊）</b>。底部 1～9 號快捷鍵可自由配置 30 招宗門武學與靈丹法符！
+    </p>
+  </div>
+
+  <div class="ov" id="sheet">
+    <h1 class="titleMain" style="font-size:24px">俠客經脈 · 武學 · 鍛造 · 靈獸</h1>
+    <div class="tabs">
+      <button class="tab on" data-tab="stat" type="button">五圍與天賦</button>
+      <button class="tab" data-tab="skill" type="button">宗門武學(30招)</button>
+      <button class="tab" data-tab="enchant" type="button">鍛造與百寶囊</button>
+      <button class="tab" data-tab="pet" type="button">化神與十靈獸</button>
+    </div>
+    <div class="panel" id="sheetBody"></div>
+    <button class="btn2 g" id="closeSheet" type="button">返回江湖</button>
+  </div>
+
+  <div class="ov" id="shop">
+    <h1 class="titleMain" style="font-size:24px">萬寶閣與上古靈獸園</h1>
+    <p class="sub" id="shopSub"></p>
+    <div class="panel" id="shopBody"></div>
+    <button class="btn2 g" id="closeShop" type="button">離開萬寶閣</button>
+  </div>
+
+  <div class="modalBg" id="modalBg">
+    <div class="modalCard" id="modalCard"></div>
+  </div>
+
+  <div id="credit">製作者：胡賈恩</div>
+</div>
+
+<script src="./js/data.js"></script>
+<script src="./js/sprites.js"></script>
+<script src="./js/audio.js"></script>
+<script src="./js/main.js"></script>
+</body>
+</html>
